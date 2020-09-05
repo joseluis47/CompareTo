@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ConsoleApp5.Entities;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace ConsoleApp5
@@ -7,15 +10,20 @@ namespace ConsoleApp5
     {
         static void Main(string[] args)
         {
-            string linha = @"C:\c#\produtos.txt";
-
+            string caminho = @"C:\c#\produtos.txt";
+            List<Produto> produtos = new List<Produto>();
             try
             {
-                using (FileStream fs = new FileStream(linha, FileMode.Open))
+                using (FileStream fs = new FileStream(caminho, FileMode.Open))
                 {
                     using (StreamReader sr = new StreamReader(fs))
                     {
-
+                        while (!sr.EndOfStream)
+                        {
+                            string linha = sr.ReadLine();
+                            Produto produto = new Produto(linha);
+                            produtos.Add(produto);
+                        }
                     }
                 }
             }
@@ -23,6 +31,10 @@ namespace ConsoleApp5
             {
                 throw new Exception("Erro");
             }
+
+            produtos.Sort();
+
+            Console.WriteLine($"O produto mais caro é a {produtos[0].Name} e o seu valor é $ {produtos[0].Valor.ToString("F2",CultureInfo.InvariantCulture)}");
         }
     }
 }
